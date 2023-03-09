@@ -1,0 +1,72 @@
+services:
+  zope:
+    image: python:3.11.1
+    build:
+      dockerfile: zope-Dockerfile
+      args:
+        ZOPE_VERSION: ${ZOPE_VERSION}
+        ZOPE_ROOT_PASSWORD: ${ZOPE_ROOT_PASSWORD}
+    volumes:
+      - zope-data:/usr/local/share/ihs
+      - backup:/backup
+    networks:
+      main:
+        aliases:
+          - zope
+
+  db:
+    image: mariadb:10.10
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+      - backup:/backup
+    networks:
+      main:
+        aliases:
+          - db
+
+  web:
+    image: nginx:1.23.3
+    build:
+      dockerfile: nginx-Dockerfile
+      args:
+        NGINX_HOST: ${NGINX_HOST}
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - NGINX_HOST=${NGINX_HOST}
+      - NGINX_ALLOW=${NGINX_ALLOW}
+    volumes:
+      - ./nginx_templates:/etc/nginx/templates
+      - ./ssl:/etc/ssl/nginx
+    links:
+      - zope:zope
+    depends_on:
+      - zope
+    networks:
+      main:
+        aliases:
+          - web
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.0
+    restart: always
+    ports:
+      - 127.0.0.1:8080:80
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    networks:
+      main:
+        aliases:
+          - phpmyadmin
+
+volumes:
+  mariadb-data:
+  zope-data:
+  backup:
+
+networks:
+  main:

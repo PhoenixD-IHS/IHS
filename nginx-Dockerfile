@@ -1,0 +1,5 @@
+FROM nginx:1.23.3
+
+COPY ./nginx_files/nginx_setup.sh /
+CMD ["bash", "nginx_setup.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -1,0 +1,41 @@
+FROM python:3.11.1
+
+ARG ZOPE_VERSION=5.8
+ARG ZOPE_ROOT_PASSWORD=adminpassword
+
+WORKDIR /usr/local/share/ihs
+
+RUN pip install --no-cache-dir wheel zc.buildout
+RUN echo '[buildout]\n\
+extends =\n\
+	https://zopefoundation.github.io/Zope/releases/'$ZOPE_VERSION'/versions-prod.cfg\n\
+parts =\n\
+	zopeinstance\n\
+\n\
+[zopeinstance]\n\
+recipe = plone.recipe.zope2instance\n\
+user = root:'${ZOPE_ROOT_PASSWORD}'\n\
+http-address = 8080\n\
+zodb-temporary-storage = on\n\
+eggs =\n\
+    Products.PythonScripts\n\
+    Products.ExternalMethod\n\
+    Products.TemporaryFolder\n\
+    Products.Sessions\n\
+    Products.ZMySQLDA\n\
+    Products.PluggableAuthService\n\
+    reportlab\n\
+' > buildout.cfg
+
+RUN if [ ! -f .installed.cfg ]; then buildout; fi
+
+ADD zope_files/Extensions.tar.gz /usr/local/share/ihs/parts/zopeinstance/Extensions/
+COPY zope_files/Select.zexp /usr/local/share/ihs/var/zopeinstance/import/
+COPY zope_files/index_html.zexp /usr/local/share/ihs/var/zopeinstance/import/
+COPY zope_files/zope_setup.py /usr/local/share/ihs/
+COPY zope_files/entrypoint.sh /usr/local/share/ihs/
+
+RUN ./bin/zopeinstance run zope_setup.py
+
+CMD ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["bash", "entrypoint.sh"]
