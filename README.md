@@ -41,3 +41,15 @@ apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 docker compose up -d --build
 ```
 
+## Updating single components
+* Find out which versions you want to use
+  * https://hub.docker.com/_/nginx
+  * https://hub.docker.com/_/mariadb
+  * https://hub.docker.com/_/phpmyadmin
+  * https://hub.docker.com/_/python
+* Modify the version behind the container name
+  * nginx: inside nginx-Dockerfile and docker-compose.yml
+  * mariadb: inside docker-compose.yml
+  * phpmyadmin: inside docker-compose.yml
+  * python: inside zope-Dockerfile and docker-compose.yml
+* Rerun ```docker compose up -d --build```
