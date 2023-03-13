@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_CONTAINER_NAME="ihs-ihs-1"
+DOCKER_CONTAINER_NAME="ihs-zope-1"
 DATE=`date +%Y-%m-%d`
 HOSTNAME=`hostname -f`
 docker exec "${DOCKER_CONTAINER_NAME}" bin/zopeinstance stop
