@@ -38,7 +38,7 @@ apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 ### Build the docker container
 ```
-docker compose up -d --build
+docker compose up -d
 ```
 
 ## Updating single components

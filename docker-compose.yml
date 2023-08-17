@@ -1,6 +1,7 @@
 services:
   zope:
     image: python:3.11.1
+    restart: always
     build:
       dockerfile: zope-Dockerfile
       args:
@@ -29,6 +30,7 @@ services:
 
   web:
     image: nginx:1.23.3
+    restart: always
     build:
       dockerfile: nginx-Dockerfile
       args:
