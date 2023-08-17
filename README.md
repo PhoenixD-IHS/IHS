@@ -38,7 +38,7 @@ apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 ### Build the docker container
 ```
-docker compose up -d
+docker compose up -d --build
 ```
 
 ## Updating single components
@@ -52,4 +52,5 @@ docker compose up -d
   * mariadb: inside docker-compose.yml
   * phpmyadmin: inside docker-compose.yml
   * python: inside zope-Dockerfile and docker-compose.yml
-* Rerun ```docker compose up -d --build```
+* Stop IHS containers ```docker compose down```
+* Start IHS containers ```docker compose up -d --build```
