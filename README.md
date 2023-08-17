@@ -52,5 +52,5 @@ docker compose up -d --build
   * mariadb: inside docker-compose.yml
   * phpmyadmin: inside docker-compose.yml
   * python: inside zope-Dockerfile and docker-compose.yml
-* Stop IHS containers ```docker compose down```
-* Start IHS containers ```docker compose up -d```
+* Stop IHS containers: ```docker compose down```
+* Start IHS containers: ```docker compose up -d```
