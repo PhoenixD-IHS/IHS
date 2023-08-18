@@ -10,7 +10,7 @@ Docker based version of `IHS` (Institutshaushaltssystem). It creates the followi
 The Zope database is accessible via NGINX configured as reverse SSL proxy. Two locations are special:
 
 * `https://<host>/manage`: Zope management interface
-* `https://<host>/mysql/`: Web interface of phpMyAdmin
+* `https://<host>/mysql`: Web interface of phpMyAdmin
 
 
 ## Installation
