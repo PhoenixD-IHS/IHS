@@ -43,10 +43,7 @@ Set configuration variables
 * Server hostname (may be `localhost`for a test installation)
 * List of IP addresses allowed to access the web server
 
-The list or IP addresses is a string containing one or more statements of the form `allow <ip address>;`. Each IP address may either be a single address or a range  list of "allow ..." statements seperated by ';'
-  * Addresses can be single IP addresses like "allow 130.75.1.1;"
-  * Addresses can be IP ranges "allow 130.75.1.0/24;"
-  * Don't forget the semicolon at the end.
+The list or IP addresses is a string containing one or more statements of the form `allow <ip address>;`. Each IP address may either be a single address (e.g. `allow 192.168.1.130;`) or an address range (e.g. `allow 192.168.2.0/24;`).
 
 ### Install SSL certificate
 
