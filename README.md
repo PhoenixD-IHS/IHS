@@ -15,7 +15,7 @@ The Zope database is accessible via NGINX configured as reverse SSL proxy. Two l
 
 ## Installation
 
-Tested on a debian machine with 1GB RAM and 8GB hard drive.
+Tested on a debian machine with 1&nbsp;GB RAM and 8&nbsp;GB hard drive.
 
 ### Install the `docker-ce` environment
 
