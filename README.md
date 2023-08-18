@@ -7,9 +7,11 @@ It creates the following containers:
 * Zope
 
 ## Installation
+
 Tested on a debian machine with 1GB RAM and 8GB hard drive.
 
-### Install Docker:
+### Install the `docker-ce` environment
+
 ```
 apt remove docker docker.io containerd runc
 apt update
@@ -20,7 +22,15 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 apt update
 apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
-### Modify content of .env
+
+### Install file `.env`
+
+```
+cp .env-template .env
+vi .env
+```
+
+Set configuration variables
 * Choose a secure password for the zope management account.
 * Choose a secure password for the mariadb root user.
 * Modify the hostname of the server
@@ -31,10 +41,11 @@ apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
   * Don't forget the semicolon at the end.
 
 ### Install SSL certificate
-* Copy your certificate to ssl/\<HOSTNAME>.crt. (example: ssl/ihs.example.com.crt)
-* Copy your private key to ssl/\<HOSTNAME>.key. (example: ssl/ihs.example.com.key)
-  * Private key should be accessible without a password.
-* If no certificate is present, a self signed certificate will be generated during installation.
+
+* Store your certificate in `ssl/\<HOSTNAME>.crt`.
+* Store your private key in `ssl/\<HOSTNAME>.key`. The private key must be accessible without a pass phrase.
+
+If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation.
 
 ### Build the docker container
 ```
