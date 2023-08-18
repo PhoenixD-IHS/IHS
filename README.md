@@ -47,7 +47,7 @@ The list or IP addresses is a string containing one or more statements of the fo
 
 ### Install SSL key and certificate
 
-Store the SSL private key as `ssl/\<host>.key` and its certificate as `ssl/\<host>.crt`. The key must be accessible without a pass phrase. If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation.
+Store the SSL private key as `ssl/<host>.key` and its certificate as `ssl/<host>.crt`. The key must be accessible without a pass phrase. If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation.
 
 ### Build all docker containers
 
