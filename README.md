@@ -38,19 +38,16 @@ vi .env
 ```
 
 Set configuration variables
-* Password for the Zope management account (user `root`)
-* Password for the MariaDB `root` user.
 * Server hostname (may be `localhost`for a test installation)
 * List of IP addresses allowed to access the web server
+* Password for the Zope management account (user `root`)
+* Password for the MariaDB `root` user.
 
 The list or IP addresses is a string containing one or more statements of the form `allow <ip address>;`. Each IP address may either be a single address (e.g. `allow 192.168.1.130;`) or an address range (e.g. `allow 192.168.2.0/24;`).
 
-### Install SSL certificate
+### Install SSL key and certificate
 
-* Store your certificate in `ssl/\<HOSTNAME>.crt`.
-* Store your private key in `ssl/\<HOSTNAME>.key`. The private key must be accessible without a pass phrase.
-
-If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation.
+Store the SSL private key in `ssl/\<host>.key` and its certificate in `ssl/\<host>.crt`. The key must be accessible without a pass phrase. If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation.
 
 ### Build the docker container
 ```
