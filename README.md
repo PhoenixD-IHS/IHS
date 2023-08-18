@@ -47,9 +47,10 @@ The list or IP addresses is a string containing one or more statements of the fo
 
 ### Install SSL key and certificate
 
-Store the SSL private key in `ssl/\<host>.key` and its certificate in `ssl/\<host>.crt`. The key must be accessible without a pass phrase. If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation.
+Store the SSL private key as `ssl/\<host>.key` and its certificate as `ssl/\<host>.crt`. The key must be accessible without a pass phrase. If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation.
 
-### Build the docker container
+### Build all docker containers
+
 ```
 docker compose up -d --build
 ```
@@ -81,3 +82,23 @@ Modify the container versions in the following files:
 * mariadb: inside `docker-compose.yml`
 * phpmyadmin: inside `docker-compose.yml`
 * python: inside `zope-Dockerfile` and `docker-compose.yml`
+
+### Useful docker commands
+
+Show list of running containers:
+
+```
+docker ps
+```
+
+Run an interactive shell in a container:
+
+```
+docker exec -it ihs-db-1 /bin/bash
+```
+
+Run a single command in a container:
+
+```
+docker exec ihs-web-1 cat /etc/hosts
+```
