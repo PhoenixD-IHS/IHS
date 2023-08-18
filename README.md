@@ -69,20 +69,6 @@ docker compose up -d
 
 ## Development
 
-### Updating single components
-
-Determine which more current versions you want to use:
-* https://hub.docker.com/_/nginx
-* https://hub.docker.com/_/mariadb
-* https://hub.docker.com/_/phpmyadmin
-* https://hub.docker.com/_/python
-
-Modify the container versions in the following files:
-* nginx: inside `nginx-Dockerfile` and `docker-compose.yml`
-* mariadb: inside `docker-compose.yml`
-* phpmyadmin: inside `docker-compose.yml`
-* python: inside `zope-Dockerfile` and `docker-compose.yml`
-
 ### Useful docker commands
 
 Show list of running containers:
@@ -102,3 +88,26 @@ Run a single command in a container:
 ```
 docker exec ihs-web-1 cat /etc/hosts
 ```
+
+### Most important file locations
+
+* `./.env`: Global parameters
+* `./docker-compose.yml`: Build configuration of all containers
+* `./nginx_templates/default.conf.template`: NGINX configuration
+* `/var/lib/docker/containers/xxxxx/xxxxx-json.log`: Container log
+* `/var/lib/docker/volumes`: Shared volumes for persistent data
+
+### Updating single containers
+
+Determine which more current versions you want to use:
+* https://hub.docker.com/_/nginx
+* https://hub.docker.com/_/mariadb
+* https://hub.docker.com/_/phpmyadmin
+* https://hub.docker.com/_/python
+
+Modify the container versions in the following files:
+* nginx: inside `nginx-Dockerfile` and `docker-compose.yml`
+* mariadb: inside `docker-compose.yml`
+* phpmyadmin: inside `docker-compose.yml`
+* python: inside `zope-Dockerfile` and `docker-compose.yml`
+
