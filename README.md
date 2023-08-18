@@ -1,10 +1,17 @@
 # IHS
-Docker based version of the _Institutshaushaltssystem_.
-It creates the following containers:
-* MariaDB
-* nginx (reverse proxy for SSL)
-* phpMyAdmin (listens only on localjost:8080)
-* Zope
+
+Docker based version of `IHS` (Institutshaushaltssystem). It creates the following containers:
+
+* MariaDB (local port 3306)
+* phpMyAdmin (local port 8088)
+* Zope (local port 8080)
+* NGINX (external port 443)
+
+The Zope database is accessible via NGINX configured as reverse SSL proxy. Two locations are special:
+
+* `https://<host>/manage`: Zope management interface
+* `https://<host>/mysql`: Web interface of phpMySQL
+
 
 ## Installation
 
