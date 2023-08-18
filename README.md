@@ -43,13 +43,15 @@ docker compose up -d --build
 
 ## Operation
 
-Stop IHS containers:
+Stop all containers:
 ```
 docker compose down
 ```
 
-Start IHS containers:
-```docker compose up -d```
+Start all containers:
+```
+docker compose up -d
+```
 
 ## Development
 
@@ -61,9 +63,8 @@ Determine which more current versions you want to use:
 * https://hub.docker.com/_/phpmyadmin
 * https://hub.docker.com/_/python
 
-Modify the version behind the container name
+Modify the container versions in the following files:
 * nginx: inside `nginx-Dockerfile` and `docker-compose.yml`
-* mariadb: inside docker-compose.yml
-* phpmyadmin: inside docker-compose.yml
-* python: inside zope-Dockerfile and docker-compose.yml
-
+* mariadb: inside `docker-compose.yml`
+* phpmyadmin: inside `docker-compose.yml`
+* python: inside `zope-Dockerfile` and `docker-compose.yml`
