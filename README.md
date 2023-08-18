@@ -30,7 +30,7 @@ apt update
 apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
 
-### Install file `.env`
+### Install the file `.env`
 
 ```
 cp .env-template .env
@@ -38,11 +38,12 @@ vi .env
 ```
 
 Set configuration variables
-* Choose a secure password for the zope management account.
-* Choose a secure password for the mariadb root user.
-* Modify the hostname of the server
-* Modify the list of IP addresses allowed to access the web server.
-  * Accepts list of "allow ..." statements seperated by ';'
+* Password for the Zope management account (user `root`)
+* Password for the MariaDB `root` user.
+* Server hostname (may be `localhost`for a test installation)
+* List of IP addresses allowed to access the web server
+
+The list or IP addresses is a string containing one or more statements of the form `allow <ip address>;`. Each IP address may either be a single address or a range  list of "allow ..." statements seperated by ';'
   * Addresses can be single IP addresses like "allow 130.75.1.1;"
   * Addresses can be IP ranges "allow 130.75.1.0/24;"
   * Don't forget the semicolon at the end.
