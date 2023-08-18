@@ -31,8 +31,8 @@ apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
   * Don't forget the semicolon at the end.
 
 ### Install SSL certificate
-* Copy your certificate to ssl/\<HOSTNAME>.crt. (example: ssl/ihs.pxd.uni-hannover.de.crt)
-* Copy your private key to ssl/\<HOSTNAME>.key. (example: ssl/ihs.pxd.uni-hannover.de.key)
+* Copy your certificate to ssl/\<HOSTNAME>.crt. (example: ssl/ihs.example.com.crt)
+* Copy your private key to ssl/\<HOSTNAME>.key. (example: ssl/ihs.example.com.key)
   * Private key should be accessible without a password.
 * If no certificate is present, a self signed certificate will be generated during installation.
 
@@ -41,16 +41,29 @@ apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 docker compose up -d --build
 ```
 
-## Updating single components
-* Find out which versions you want to use
-  * https://hub.docker.com/_/nginx
-  * https://hub.docker.com/_/mariadb
-  * https://hub.docker.com/_/phpmyadmin
-  * https://hub.docker.com/_/python
-* Modify the version behind the container name
-  * nginx: inside nginx-Dockerfile and docker-compose.yml
-  * mariadb: inside docker-compose.yml
-  * phpmyadmin: inside docker-compose.yml
-  * python: inside zope-Dockerfile and docker-compose.yml
-* Stop IHS containers: ```docker compose down```
-* Start IHS containers: ```docker compose up -d```
+## Operation
+
+Stop IHS containers:
+```
+docker compose down
+```
+
+Start IHS containers:
+```docker compose up -d```
+
+## Development
+
+### Updating single components
+
+Determine which more current versions you want to use:
+* https://hub.docker.com/_/nginx
+* https://hub.docker.com/_/mariadb
+* https://hub.docker.com/_/phpmyadmin
+* https://hub.docker.com/_/python
+
+Modify the version behind the container name
+* nginx: inside `nginx-Dockerfile` and `docker-compose.yml`
+* mariadb: inside docker-compose.yml
+* phpmyadmin: inside docker-compose.yml
+* python: inside zope-Dockerfile and docker-compose.yml
+
