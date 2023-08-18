@@ -7,7 +7,6 @@ upstream docker-phpmyadmin {
 }
 
 server {
-	
 	listen 80 default_server;
 	listen [::]:80 default_server;
 
@@ -49,14 +48,14 @@ server {
 	proxy_set_header Host $host;
 	proxy_set_header X-Real-IP $remote_addr;
 	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	proxy_set_header X-Forwarded-Proto $scheme;
 
 	location / {
 		proxy_pass http://docker-zope/VirtualHostBase/https/${NGINX_HOST}:443/;
 	}
 
-	location /mysql {
+	location /mysql/ {
 		rewrite ^/mysql(/.*)$ $1 break;
-		proxy_set_header X-Forwarded-Proto $scheme;
 		proxy_pass http://docker-phpmyadmin/;
 	}
 }
