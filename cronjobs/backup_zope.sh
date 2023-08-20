@@ -1,8 +1,13 @@
 #!/bin/bash
 
-DOCKER_CONTAINER_NAME="ihs-zope-1"
-DATE=`date +%Y-%m-%d`
-HOSTNAME=`hostname -f`
-docker exec "${DOCKER_CONTAINER_NAME}" bin/zopeinstance stop
-docker exec "${DOCKER_CONTAINER_NAME}" cp "/usr/local/share/ihs/var/filestorage/Data.fs" "/backup/${DATE}_${HOSTNAME}-Data.fs"
-docker exec "${DOCKER_CONTAINER_NAME}" bin/zopeinstance start
+. /root/src/ihs/.env
+
+NAME="$1"
+BACKUPDIR="/var/lib/docker/volumes/ihs_backup/_data"
+
+AUTH="Authorization: basic `echo -n "root:${ZOPE_ROOT_PASSWORD}" | base64`"
+URL="http://localhost:8080/Select/install/export_py?kurztext=${NAME}"
+FILE=$BACKUPDIR/$NAME`date +"_%F_%T"`.zexp
+
+echo "Storing ZODB backup of /IHS-${NAME} in ${FILE}..."
+wget --quiet -O $FILE --header="$AUTH" $URL
