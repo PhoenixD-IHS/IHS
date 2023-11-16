@@ -7,13 +7,15 @@ services:
     volumes:
       - mariadb-data:/var/lib/mysql
       - backup:/backup
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--connect"]
     networks:
       main:
         aliases:
           - db
 
   zope:
-    image: python:3.11.1
+    image: python:3.11
     restart: always
     ports:
       - 127.0.0.1:8080:8080
@@ -27,6 +29,8 @@ services:
       - backup:/backup
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
     networks:
       main:
         aliases:
@@ -40,8 +44,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       PMA_ABSOLUTE_URI: https://${NGINX_HOST}/mysql/
+      UPLOAD_LIMIT: 1G
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
     networks:
       main:
         aliases:
@@ -66,6 +73,8 @@ services:
     depends_on:
       - zope
       - phpmyadmin
+    healthcheck:
+      test: ["CMD", "service", "nginx", "status"]
     networks:
       main:
         aliases:

@@ -1,4 +1,4 @@
-FROM python:3.11.1
+FROM python:3.11
 
 ARG ZOPE_VERSION=5.8
 ARG ZOPE_ROOT_PASSWORD=adminpassword
@@ -29,11 +29,11 @@ eggs =\n\
 
 RUN if [ ! -f .installed.cfg ]; then buildout; fi
 
-ADD zope_files/Extensions.tar.gz /usr/local/share/ihs/parts/zopeinstance/Extensions/
-COPY zope_files/Select.zexp /usr/local/share/ihs/var/zopeinstance/import/
 COPY zope_files/index_html.zexp /usr/local/share/ihs/var/zopeinstance/import/
 COPY zope_files/zope_setup.py /usr/local/share/ihs/
 COPY zope_files/entrypoint.sh /usr/local/share/ihs/
+COPY zope_files/Select.zexp /usr/local/share/ihs/var/zopeinstance/import/
+ADD zope_files/Extensions.tar.gz /usr/local/share/ihs/parts/zopeinstance/Extensions/
 
 RUN ./bin/zopeinstance run zope_setup.py
 
