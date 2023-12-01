@@ -3,7 +3,7 @@ upstream docker-zope {
 }
 	
 upstream docker-phpmyadmin {
-	server phpmyadmin:80;
+	server phpmyadmin:8088;
 }
 
 server {
@@ -20,7 +20,7 @@ server {
 	listen 443 ssl http2;
 	listen [::]:443 ssl http2;
 
-	${NGINX_ALLOW}
+	allow 127.0.0.1;${NGINX_ALLOW}
 	deny all;	
 
 	ssl_certificate /etc/ssl/nginx/${NGINX_HOST}.crt;

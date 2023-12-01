@@ -24,6 +24,7 @@ eggs =\n\
     Products.Sessions\n\
     Products.ZMySQLDA\n\
     Products.PluggableAuthService\n\
+    Products.ExternalEditor\n\
     reportlab\n\
 ' > buildout.cfg
 

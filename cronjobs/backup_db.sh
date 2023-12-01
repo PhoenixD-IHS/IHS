@@ -1,7 +1,13 @@
 #!/bin/bash
-MARIADB_ROOT_PASSWORD="secure-password"
-DOCKER_CONTAINER_NAME="ihs-db-1"
-DATE=`date +%Y-%m-%d`
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+. $SCRIPT_DIR/../.env
+
+BACKUPDIR="${1}"
+
+DATE=`date +%F_%T`
 HOSTNAME=`hostname -f`
 
-docker exec "${DOCKER_CONTAINER_NAME}" bash -c "mysqldump --all-databases --password=${MARIADB_ROOT_PASSWORD} > /backup/${DATE}_${HOSTNAME}-db.sql"
+FILE="${BACKUPDIR}/${HOSTNAME}_IHS-${NAME}_${DATE}.zexp"
+mysqldump --all-databases --host=127.0.01 --password=${MARIADB_ROOT_PASSWORD} > ${BACKUPDIR}/${DATE}_${HOSTNAME}-db.sql

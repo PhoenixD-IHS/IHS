@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ ! "$(ls -A /etc/ssl/nginx)" ]; then
+if [ ! "$(ls /etc/ssl/nginx)" ]; then
 	# no certs provided, create self signed
 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/nginx/${NGINX_HOST}.key -out /etc/ssl/nginx/${NGINX_HOST}.crt -batch
 fi

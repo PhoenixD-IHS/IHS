@@ -1,4 +1,4 @@
-FROM nginx:1.23.3
+FROM nginx:1.25
 
 COPY ./nginx_files/nginx_setup.sh /
 CMD ["bash", "nginx_setup.sh"]
