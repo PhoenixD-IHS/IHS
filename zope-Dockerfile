@@ -1,6 +1,6 @@
-FROM python:3.11
+FROM python:3.12
 
-ARG ZOPE_VERSION=5.8
+ARG ZOPE_VERSION=5.9
 ARG ZOPE_ROOT_PASSWORD=adminpassword
 
 WORKDIR /usr/local/share/ihs
