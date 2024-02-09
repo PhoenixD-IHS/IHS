@@ -67,6 +67,85 @@ Start all containers:
 docker compose up -d
 ```
 
+## Data transfer from IHS version 11
+
+On the shell console of the old IHS system run the following commands to create a copy of the last database of institute foo. We keep the old database `Institute_foo` in case anything goes wrong.
+```
+rcmysql stop
+cd /local/mysql
+cp -a Institut_foo Institut_foo_copy
+rcmysql start
+```
+
+Switch to a MySQL console on the old IHS system and select the database `Institut_foo_copy`. Then run the following commands to remove obsolete tables which might exist:
+```
+DROP TABLE IF EXISTS Log;
+DROP TABLE IF EXISTS MiscData;
+```
+
+Replace the role ID by the role name in `Fonds.Gruppe`:
+```
+ALTER TABLE Fonds CHANGE Gruppe Gruppe_old INT(11) NOT NULL DEFAULT '0';
+ALTER TABLE Fonds ADD Gruppe VARCHAR(40) NOT NULL DEFAULT 'None' AFTER Gruppe_old;
+UPDATE Fonds as b 
+INNER JOIN IHS_pxd.Roles as a on a.Id = b.Gruppe_old
+SET b.Gruppe = a.Rolename;
+ALTER TABLE Fonds DROP Gruppe_old;
+```
+
+Add missing default values:
+```
+ALTER TABLE SAP ALTER COLUMN Steuer SET DEFAULT '';
+ALTER TABLE SAPinsert ALTER COLUMN Steuer SET DEFAULT '';
+```
+
+Convert all tables from charset latin1 to utf8. This can take quite a while, if `SAP` is a large table.
+```
+ALTER TABLE Anlage CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Beleg CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Bewilligung CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Entsperrung CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Fonds CONVERT TO CHARACTER SET utf8;
+ALTER TABLE HiWimittel CONVERT TO CHARACTER SET utf8;
+ALTER TABLE HiWitarif CONVERT TO CHARACTER SET utf8;
+ALTER TABLE HiWivertrag CONVERT TO CHARACTER SET utf8;
+ALTER TABLE invPosition CONVERT TO CHARACTER SET utf8;
+ALTER TABLE invUnterposition CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Korrektur CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Mitarbeiter CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Personalnummer CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Planfonds CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Planung CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Position CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Projekttraeger CONVERT TO CHARACTER SET utf8;
+ALTER TABLE SAP CONVERT TO CHARACTER SET utf8;
+ALTER TABLE SAPinsert CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Sperre CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Stelle CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Tarif CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Unterposition CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Vertrag CONVERT TO CHARACTER SET utf8;
+ALTER TABLE Zuweisung CONVERT TO CHARACTER SET utf8;
+```
+
+The database is now ready for the transfer. Switch back to the shell console of the old IHS system now and generate a database dump `foo.db`. We switch the database engine to utf8 in this step. This makes utf8 the default for new tables in the future.
+```
+mysqldump -u root -p<pass> --skip-add-locks Institut_foo_copy | sed -e "s/^) ENGINE.*utf8;$/);/" > /local/tmp/foo.db
+```
+
+Transfer `foo.db` to the new IHS server and store it in the folder `/var/lib/docker/volumes/ihs_backup/_data`. Run the following command to get a shell in the MariaDB container:
+```
+docker exec -it ihs-db-1 /bin/bash
+```
+
+Import the database dump on the new IHS server using the following command on the container shell. 
+```
+cat /backup/foo.db | mysql -u root -p<pass> Institut_foo
+```
+All tables of `Institut_foo` should now be of type InnoDB instead of MyISAM. You can check that using phpMyAdmin.
+
+The database is now prepared to import the latest SAP data via the IHS web interface.
+
 ## Development
 
 ### Useful docker commands
