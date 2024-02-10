@@ -144,7 +144,7 @@ cat /backup/foo.db | mysql -u root -p<pass> Institut_foo
 ```
 All tables of `Institut_foo` should now be of type InnoDB instead of MyISAM. You can check that using phpMyAdmin.
 
-The database is now prepared to import the latest SAP data via the IHS web interface.
+The database is now restored and the new IHS server is operational with all data from the old server. An import of the latest SAP data via the IHS web interface of the new server should thus indicate no new booking data.
 
 ## Development
 
