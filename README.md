@@ -69,7 +69,7 @@ docker compose up -d
 
 ## Data transfer from IHS version 11
 
-On the shell console of the old IHS system run the following commands to create a copy of the last database of institute foo. We keep the old database `Institute_foo` in case anything goes wrong.
+On the shell console of the old IHS system run the following commands to create a copy of the last database of institute foo. We will keep the current database `Institute_foo` and work only on `Institute_foo_copy` in case anything goes wrong.
 ```
 rcmysql stop
 cd /local/mysql
