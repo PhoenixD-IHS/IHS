@@ -128,7 +128,7 @@ ALTER TABLE Vertrag CONVERT TO CHARACTER SET utf8;
 ALTER TABLE Zuweisung CONVERT TO CHARACTER SET utf8;
 ```
 
-The database is now ready for the transfer. Switch back to the shell console of the old IHS system now and generate a database dump `foo.db`. We switch the database engine to utf8 in this step. This makes utf8 the default for new tables in the future.
+The database is now ready for the transfer. Switch back to the shell console of the old IHS system now and generate a database dump `foo.db`. We delete the explicit database engine specification to use the default engine of MariaDB.
 ```
 mysqldump -u root -p<pass> --skip-add-locks Institut_foo_copy | sed -e "s/^) ENGINE.*utf8;$/);/" > /local/tmp/foo.db
 ```
