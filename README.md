@@ -178,15 +178,19 @@ docker exec ihs-web-1 cat /etc/hosts
 
 ### Updating single containers
 
-Determine which more current versions you want to use:
+Links to the official docker images on which the IHS system is based:
 * https://hub.docker.com/_/nginx
 * https://hub.docker.com/_/mariadb
 * https://hub.docker.com/_/phpmyadmin
 * https://hub.docker.com/_/python
 
-Modify the container versions in the following files:
+The IHS system is configured for specific version numbers of these images to keep it stable. IHS developers need to keep an eye on the web pages of the images to determine if a more recent version should be used. In that case, the version numbers must be updated in the following files:
 * nginx: inside `nginx-Dockerfile` and `docker-compose.yml`
 * mariadb: inside `docker-compose.yml`
 * phpmyadmin: inside `docker-compose.yml`
 * python: inside `zope-Dockerfile` and `docker-compose.yml`
 
+Rebuild and restart all docker containers:
+```
+docker compose up -d --build
+```
