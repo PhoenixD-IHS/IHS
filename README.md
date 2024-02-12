@@ -2,16 +2,15 @@
 
 Docker based version of `IHS` (Institutshaushaltssystem). It creates the following containers:
 
-* `ihs-db-1`: MariaDB (local port 3306)
-* `ihs-phpmyadmin-1`: phpMyAdmin (local port 8088)
-* `ihs-zope-1`: Zope (local port 8080)
-* `ihs-web-1`: NGINX (external port 443)
+- `ihs-db-1`: MariaDB (local port 3306)
+- `ihs-phpmyadmin-1`: phpMyAdmin (local port 8088)
+- `ihs-zope-1`: Zope (local port 8080)
+- `ihs-web-1`: NGINX (external port 443)
 
 The Zope database is accessible via NGINX configured as reverse SSL proxy. Two locations are special:
 
-* `https://<host>/manage`: Zope management interface
-* `https://<host>/mysql`: Web interface of phpMyAdmin
-
+- `https://<host>/manage`: Zope management interface
+- `https://<host>/mysql`: Web interface of phpMyAdmin
 
 ## Installation
 
@@ -38,10 +37,11 @@ vi .env
 ```
 
 Set configuration variables
-* Server hostname (may be `localhost`for a test installation)
-* List of IP addresses allowed to access the web server
-* Password for the Zope management account (user `root`)
-* Password for the MariaDB `root` user.
+
+- Server hostname (may be `localhost`for a test installation)
+- List of IP addresses allowed to access the web server
+- Password for the Zope management account (user `root`)
+- Password for the MariaDB `root` user.
 
 The list or IP addresses is a string containing one or more statements of the form `allow <ip address>;`. Each IP address may either be a single address (e.g. `allow 192.168.1.130;`) or an address range (e.g. `allow 192.168.2.0/24;`).
 
@@ -55,14 +55,24 @@ Store the SSL private key as `ssl/<host>.key` and its certificate as `ssl/<host>
 docker compose up -d --build
 ```
 
+Building the python and zope environment might take several minutes. To check the progress you might check the log file of the container. To find the beginning of the ID of the container run:
+
+```
+docker ps
+```
+
+Use the first column to identify the python/zope container and check its logs. On debian systems they are located at /var/lib/docker/containers/<container_id>/<container_id>.json
+
 ## Operation
 
 Stop all containers:
+
 ```
 docker compose down
 ```
 
 Start all containers:
+
 ```
 docker compose up -d
 ```
@@ -70,6 +80,7 @@ docker compose up -d
 ## Data transfer from IHS version 11
 
 On the shell console of the old IHS system run the following commands to create a copy of the last database of institute foo. We will keep the current database `Institute_foo` and work only on `Institute_foo_copy` in case anything goes wrong.
+
 ```
 rcmysql stop
 cd /local/mysql
@@ -78,28 +89,32 @@ rcmysql start
 ```
 
 Switch to a MySQL console on the old IHS system and select the database `Institut_foo_copy`. Then run the following commands to remove obsolete tables which might exist:
+
 ```
 DROP TABLE IF EXISTS Log;
 DROP TABLE IF EXISTS MiscData;
 ```
 
 Replace the role ID by the role name in `Fonds.Gruppe`:
+
 ```
 ALTER TABLE Fonds CHANGE Gruppe Gruppe_old INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE Fonds ADD Gruppe VARCHAR(40) NOT NULL DEFAULT 'None' AFTER Gruppe_old;
-UPDATE Fonds as b 
+UPDATE Fonds as b
 INNER JOIN IHS_pxd.Roles as a on a.Id = b.Gruppe_old
 SET b.Gruppe = a.Rolename;
 ALTER TABLE Fonds DROP Gruppe_old;
 ```
 
 Add missing default values:
+
 ```
 ALTER TABLE SAP ALTER COLUMN Steuer SET DEFAULT '';
 ALTER TABLE SAPinsert ALTER COLUMN Steuer SET DEFAULT '';
 ```
 
 Convert all tables from charset latin1 to utf8. This can take quite a while, if `SAP` is a large table.
+
 ```
 ALTER TABLE Anlage CONVERT TO CHARACTER SET utf8;
 ALTER TABLE Beleg CONVERT TO CHARACTER SET utf8;
@@ -129,19 +144,23 @@ ALTER TABLE Zuweisung CONVERT TO CHARACTER SET utf8;
 ```
 
 The database is now ready for the transfer. Switch back to the shell console of the old IHS system now and generate a database dump `foo.db`. We delete the explicit database engine specification to use the default engine of MariaDB.
+
 ```
 mysqldump -u root -p<pass> --skip-add-locks Institut_foo_copy | sed -e "s/^) ENGINE.*utf8;$/);/" > /local/tmp/foo.db
 ```
 
 Transfer `foo.db` to the new IHS server and store it in the folder `/var/lib/docker/volumes/ihs_backup/_data`. Run the following command to get a shell in the MariaDB container:
+
 ```
 docker exec -it ihs-db-1 /bin/bash
 ```
 
-Import the database dump on the new IHS server using the following command on the container shell. 
+Import the database dump on the new IHS server using the following command on the container shell.
+
 ```
 cat /backup/foo.db | mysql -u root -p<pass> Institut_foo
 ```
+
 All tables of `Institut_foo` should now be of type InnoDB instead of MyISAM. You can check that using phpMyAdmin.
 
 The database is now restored and the new IHS server is operational with all data from the old server. An import of the latest SAP data via the IHS web interface of the new server should thus indicate no new booking data.
@@ -170,27 +189,31 @@ docker exec ihs-web-1 cat /etc/hosts
 
 ### Most important file locations
 
-* `./.env`: Global parameters
-* `./docker-compose.yml`: Build configuration of all containers
-* `./nginx_templates/default.conf.template`: NGINX configuration
-* `/var/lib/docker/containers/xxxxx/xxxxx-json.log`: Container log
-* `/var/lib/docker/volumes`: Shared volumes for persistent data
+- `./.env`: Global parameters
+- `./docker-compose.yml`: Build configuration of all containers
+- `./nginx_templates/default.conf.template`: NGINX configuration
+- `/var/lib/docker/containers/xxxxx/xxxxx-json.log`: Container log
+- `/var/lib/docker/volumes`: Shared volumes for persistent data
 
 ### Updating single containers
 
-Links to the official docker images on which the IHS system is based:
-* https://hub.docker.com/_/nginx
-* https://hub.docker.com/_/mariadb
-* https://hub.docker.com/_/phpmyadmin
-* https://hub.docker.com/_/python
+Links to the official docker images on which the IHS system is based (to look up the most recent version):
 
-The IHS system is configured for specific version numbers of these images to keep it stable. IHS developers need to keep an eye on the web pages of the images to determine if a more recent version should be used. In that case, the version numbers must be updated in the following files:
-* nginx: inside `nginx-Dockerfile` and `docker-compose.yml`
-* mariadb: inside `docker-compose.yml`
-* phpmyadmin: inside `docker-compose.yml`
-* python: inside `zope-Dockerfile` and `docker-compose.yml`
+- https://hub.docker.com/_/nginx
+- https://hub.docker.com/_/mariadb
+- https://hub.docker.com/_/phpmyadmin
+- https://hub.docker.com/_/python
+
+Links to zope releases (to look up the most recent version):
+
+- https://pypi.org/project/Zope/#history
+
+The IHS system is configured for specific version numbers of these images to keep it stable. IHS developers need to keep an eye on the web pages of the images to determine if a more recent version should be used. Before updating the MariaDB, python or zope version make sure you have a backup! The version numbers must be updated in the `.env`:
 
 Rebuild and restart all docker containers:
+
 ```
 docker compose up -d --build
 ```
+
+Updating python or zope requires to rebuild the zope environment. This might take several minutes.
