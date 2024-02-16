@@ -1,7 +1,10 @@
-from Products.ZODBMountPoint.MountedObject import manage_addMounts
-from Products.PluggableAuthService.PluggableAuthService import PluggableAuthService
-import transaction
 import os
+
+import transaction
+from Products.PluggableAuthService.PluggableAuthService import (
+    PluggableAuthService,
+)
+from Products.ZODBMountPoint.MountedObject import manage_addMounts
 
 # add temp_folder
 if "temp_folder" not in dir(app):
@@ -24,24 +27,35 @@ if not isinstance(app["acl_users"], PluggableAuthService):
 
     # create PAS acl_users in temp folder
     folder = app.manage_addProduct["OFS"].manage_addFolder("acl_temp")
-    app.acl_temp.manage_addProduct["PluggableAuthService"].addPluggableAuthService()
+    app.acl_temp.manage_addProduct[
+        "PluggableAuthService"
+    ].addPluggableAuthService()
     PAS = app.acl_temp.acl_users
 
     # add content to acl_users
-    PAS.manage_addProduct['PluggableAuthService'].addZODBUserManager("users", title="User Management")
-    PAS.manage_addProduct['PluggableAuthService'].addZODBRoleManager("roles", title="Role Management")
-    PAS.manage_addProduct['PluggableAuthService'].addHTTPBasicAuthHelper("httpAuth", title="HTTP Basic Auth")
-    PAS.manage_addProduct['PluggableAuthService'].addHTTPBasicAuthHelper("cookieAuth", title="Cookie Auth", cookie_name="IHSauth")
+    PAS.manage_addProduct["PluggableAuthService"].addZODBUserManager(
+        "users", title="User Management"
+    )
+    PAS.manage_addProduct["PluggableAuthService"].addZODBRoleManager(
+        "roles", title="Role Management"
+    )
+    PAS.manage_addProduct["PluggableAuthService"].addHTTPBasicAuthHelper(
+        "httpAuth", title="HTTP Basic Auth"
+    )
+    PAS.manage_addProduct["PluggableAuthService"].addCookieAuthHelper(
+        "cookieAuth", title="Cookie Auth", cookie_name="IHSauth"
+    )
 
     # activate interfaces
-    PAS.users.manage_activateInterfaces(["IAuthenticationPlugin",
-                                         "IUserEnumerationPlugin",
-                                         "IUserAdderPlugin"])
-    PAS.roles.manage_activateInterfaces(["IRolesPlugin",
-                                         "IRoleEnumerationPlugin",
-                                         "IRoleAssignerPlugin"])
-    PAS.httpAuth.manage_activateInterfaces(["IExtractionPlugin",
-                                            "IChallengePlugin"])
+    PAS.users.manage_activateInterfaces(
+        ["IAuthenticationPlugin", "IUserEnumerationPlugin", "IUserAdderPlugin"]
+    )
+    PAS.roles.manage_activateInterfaces(
+        ["IRolesPlugin", "IRoleEnumerationPlugin", "IRoleAssignerPlugin"]
+    )
+    PAS.httpAuth.manage_activateInterfaces(
+        ["IExtractionPlugin", "IChallengePlugin"]
+    )
     PAS.cookieAuth.manage_activateInterfaces(["IExtractionPlugin"])
 
     # make sure roles Manager and Owner are defined
@@ -50,10 +64,12 @@ if not isinstance(app["acl_users"], PluggableAuthService):
             PAS.roles.manage_addRole(role, None, "")
 
     # add user root with role Manager
-    PAS.users.manage_addUser("root",
-                             "root",
-                             os.environ["ZOPE_ROOT_PASSWORD"],
-                             os.environ["ZOPE_ROOT_PASSWORD"])
+    PAS.users.manage_addUser(
+        "root",
+        "root",
+        os.environ["ZOPE_ROOT_PASSWORD"],
+        os.environ["ZOPE_ROOT_PASSWORD"],
+    )
     PAS.roles.manage_assignRoleToPrincipals("Manager", ["root"], None)
     transaction.commit()
 
