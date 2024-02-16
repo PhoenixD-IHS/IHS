@@ -146,10 +146,10 @@ ALTER TABLE Zuweisung CONVERT TO CHARACTER SET utf8;
 The database is now ready for the transfer. Switch back to the shell console of the old IHS system now and generate a database dump `foo.db`. We delete the explicit database engine specification to use the default engine of MariaDB.
 
 ```
-mysqldump -u root -p<pass> --skip-add-locks Institut_foo_copy | sed -e "s/^) ENGINE.*utf8;$/);/" > /local/tmp/foo.db
+mysqldump -u root -p --skip-add-locks Institut_foo_copy | sed -e "s/^) ENGINE.*utf8;$/);/" > /local/tmp/foo.db
 ```
 
-Transfer `foo.db` to the new IHS server and store it in the folder `/var/lib/docker/volumes/ihs_backup/_data`. Run the following command to get a shell in the MariaDB container:
+Transfer `foo.db` to the new IHS server and store it in the folder `/var/lib/docker/volumes/ihs_mariadb-data/_data`. Run the following command to get a shell in the MariaDB container:
 
 ```
 docker exec -it ihs-db-1 /bin/bash
@@ -158,7 +158,7 @@ docker exec -it ihs-db-1 /bin/bash
 Import the database dump on the new IHS server using the following command on the container shell.
 
 ```
-cat /backup/foo.db | mysql -u root -p<pass> Institut_foo
+cat /var/lib/mysql/foo.db | mariadb -u root -p Institut_foo
 ```
 
 All tables of `Institut_foo` should now be of type InnoDB instead of MyISAM. You can check that using phpMyAdmin.
