@@ -99,7 +99,7 @@ Replace the role ID by the role name in `Fonds.Gruppe`:
 
 ```
 ALTER TABLE Fonds CHANGE Gruppe Gruppe_old INT(11) NOT NULL DEFAULT '0';
-ALTER TABLE Fonds ADD Gruppe VARCHAR(40) NOT NULL DEFAULT 'None' AFTER Gruppe_old;
+ALTER TABLE Fonds ADD Gruppe VARCHAR(40) NOT NULL DEFAULT '' AFTER Gruppe_old;
 UPDATE Fonds as b
 INNER JOIN IHS_pxd.Roles as a on a.Id = b.Gruppe_old
 SET b.Gruppe = a.Rolename;
