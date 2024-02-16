@@ -57,12 +57,7 @@ cp /zope_files/Select.zexp /usr/local/share/ihs/var/zopeinstance/import/
 mkdir -p /usr/local/share/ihs/parts/zopeinstance/Extensions/
 cp -r /zope_files/Extensions/* /usr/local/share/ihs/parts/zopeinstance/Extensions/
 
-if [ ! -f /usr/local/share/ihs/.zope_setup_run ];
-then
-  # setup routine was not called -> install select.zexp and index.html
-	/usr/local/share/ihs/bin/zopeinstance run /usr/local/share/ihs/zope_setup.py
-	touch /usr/local/share/ihs/.zope_setup_run
-fi
+/usr/local/share/ihs/bin/zopeinstance run /usr/local/share/ihs/zope_setup.py
 
 # start zope instance
 /usr/local/share/ihs/bin/zopeinstance start
