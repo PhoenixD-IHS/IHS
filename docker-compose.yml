@@ -11,6 +11,10 @@ services:
       - backup:/backup
     healthcheck:
       test: ["CMD", "/usr/local/bin/healthcheck.sh", "--connect"]
+    command: [
+      "--wait_timeout=31536000",
+      "--interactive_timeout=31536000"
+    ]
     networks:
       main:
         aliases:
