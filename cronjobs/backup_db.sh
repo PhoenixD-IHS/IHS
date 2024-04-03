@@ -10,4 +10,4 @@ DATE=`date +%F_%T`
 HOSTNAME=`hostname -f`
 
 FILE="${BACKUPDIR}/${HOSTNAME}_IHS-${NAME}_${DATE}.zexp"
-mysqldump --all-databases --host=127.0.01 --password=${MARIADB_ROOT_PASSWORD} > ${BACKUPDIR}/${DATE}_${HOSTNAME}-db.sql
+mysqldump --all-databases --host=127.0.01 --password=${MARIADB_ROOT_PASSWORD} | gzip -c > ${BACKUPDIR}/${DATE}_${HOSTNAME}-db.sql.gz
