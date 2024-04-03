@@ -12,6 +12,6 @@ HOSTNAME=`hostname -f`
 
 AUTH="Authorization: basic `echo -n "root:${ZOPE_ROOT_PASSWORD}" | base64`"
 URL="http://localhost:8080/Select/install/export_py?kurztext=${NAME}"
-FILE="${BACKUPDIR}/${HOSTNAME}_IHS-${NAME}_${DATE}.zexp"
+FILE="${BACKUPDIR}/${HOSTNAME}_IHS-${NAME}_${DATE}.zexp.gz"
 echo "Storing ZODB backup of /IHS-${NAME} in ${FILE}..."
-wget --quiet -O $FILE --header="$AUTH" $URL
+wget --quiet -O - --header="$AUTH" $URL | gzip -c > "${FILE}"
