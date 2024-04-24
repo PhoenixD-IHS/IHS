@@ -18,7 +18,7 @@ Tested on a debian machine with 1&nbsp;GB RAM and 8&nbsp;GB hard drive.
 
 ### Install the `docker-ce` environment
 
-```
+```bash
 apt remove docker docker.io containerd runc
 apt update
 apt install ca-certificates curl gnupg lsb-release
@@ -31,7 +31,7 @@ apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 ### Install the file `.env`
 
-```
+```bash
 cp .env-template .env
 vi .env
 ```
@@ -51,13 +51,13 @@ Store the SSL private key as `ssl/<host>.key` and its certificate as `ssl/<host>
 
 ### Build all docker containers
 
-```
+```bash
 docker compose up -d --build
 ```
 
 Building the python and zope environment might take several minutes. To check the progress you might check the log file of the container. To find the beginning of the ID of the container run:
 
-```
+```bash
 docker ps
 ```
 
@@ -67,13 +67,13 @@ Use the first column to identify the python/zope container and check its logs. O
 
 Stop all containers:
 
-```
+```bash
 docker compose down
 ```
 
 Start all containers:
 
-```
+```bash
 docker compose up -d
 ```
 
@@ -81,7 +81,7 @@ docker compose up -d
 
 On the shell console of the old IHS system run the following commands to create a copy of the last database of institute foo. We will keep the current database `Institute_foo` and work only on `Institute_foo_copy` in case anything goes wrong.
 
-```
+```bash
 rcmysql stop
 cd /local/mysql
 cp -a Institut_foo Institut_foo_copy
@@ -90,32 +90,32 @@ rcmysql start
 
 Switch to a MySQL console on the old IHS system and select the database `Institut_foo_copy`. Then run the following commands to remove obsolete tables which might exist:
 
-```
+```mysql
 DROP TABLE IF EXISTS Log;
 DROP TABLE IF EXISTS MiscData;
 ```
 
-Replace the role ID by the role name in `Fonds.Gruppe`:
+Replace the role ID by the role name in `Fonds.Gruppe` (Don't forget to replace `foo` in the command):
 
-```
+```mysql
 ALTER TABLE Fonds CHANGE Gruppe Gruppe_old INT(11) NOT NULL DEFAULT '0';
 ALTER TABLE Fonds ADD Gruppe VARCHAR(40) NOT NULL DEFAULT '' AFTER Gruppe_old;
 UPDATE Fonds as b
-INNER JOIN IHS_pxd.Roles as a on a.Id = b.Gruppe_old
+INNER JOIN IHS_foo.Roles as a on a.Id = b.Gruppe_old
 SET b.Gruppe = a.Rolename;
 ALTER TABLE Fonds DROP Gruppe_old;
 ```
 
 Add missing default values:
 
-```
+```mysql
 ALTER TABLE SAP ALTER COLUMN Steuer SET DEFAULT '';
 ALTER TABLE SAPinsert ALTER COLUMN Steuer SET DEFAULT '';
 ```
 
 Convert all tables from charset latin1 to utf8. This can take quite a while, if `SAP` is a large table.
 
-```
+```mysql
 ALTER TABLE Anlage CONVERT TO CHARACTER SET utf8;
 ALTER TABLE Beleg CONVERT TO CHARACTER SET utf8;
 ALTER TABLE Bewilligung CONVERT TO CHARACTER SET utf8;
@@ -145,19 +145,19 @@ ALTER TABLE Zuweisung CONVERT TO CHARACTER SET utf8;
 
 The database is now ready for the transfer. Switch back to the shell console of the old IHS system now and generate a database dump `foo.db`. We delete the explicit database engine specification to use the default engine of MariaDB.
 
-```
+```bash
 mysqldump -u root -p --skip-add-locks Institut_foo_copy | sed -e "s/^) ENGINE.*utf8;$/);/" > /local/tmp/foo.db
 ```
 
 Transfer `foo.db` to the new IHS server and store it in the folder `/var/lib/docker/volumes/ihs_mariadb-data/_data`. Run the following command to get a shell in the MariaDB container:
 
-```
+```bash
 docker exec -it ihs-db-1 /bin/bash
 ```
 
 Import the database dump on the new IHS server using the following command on the container shell.
 
-```
+```bash
 cat /var/lib/mysql/foo.db | mariadb -u root -p Institut_foo
 ```
 
@@ -171,19 +171,19 @@ The database is now restored and the new IHS server is operational with all data
 
 Show list of running containers:
 
-```
+```bash
 docker ps
 ```
 
 Run an interactive shell in a container:
 
-```
+```bash
 docker exec -it ihs-db-1 /bin/bash
 ```
 
 Run a single command in a container:
 
-```
+```bash
 docker exec ihs-web-1 cat /etc/hosts
 ```
 
@@ -212,7 +212,7 @@ The IHS system is configured for specific version numbers of these images to kee
 
 Rebuild and restart all docker containers:
 
-```
+```bash
 docker compose up -d --build
 ```
 
