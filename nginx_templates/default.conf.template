@@ -50,6 +50,10 @@ server {
 	proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 	proxy_set_header X-Forwarded-Proto $scheme;
 
+  # Adjusting proxy timeout to avoid timeout during SAP file reading
+  proxy_read_timeout 300s;
+  proxy_connect_timeout 300s;
+
 	location / {
 		proxy_pass http://docker-zope/VirtualHostBase/https/${NGINX_HOST}:443/;
 	}
