@@ -1,6 +1,6 @@
 # IHS
 
-Docker based version of `IHS` (Institutshaushaltssystem). It creates the following containers:
+Docker based version of `IHS` (Institutshaushaltssystem). It creates the following containers (if the working directory is called `ihs`):
 
 - `ihs-db-1`: MariaDB (local port 3306)
 - `ihs-phpmyadmin-1`: phpMyAdmin (local port 8088)
@@ -43,7 +43,7 @@ Set configuration variables
 - Password for the Zope management account (user `root`)
 - Password for the MariaDB `root` user.
 
-The list or IP addresses is a string containing one or more statements of the form `allow <ip address>;`. Each IP address may either be a single address (e.g. `allow 192.168.1.130;`) or an address range (e.g. `allow 192.168.2.0/24;`).
+The list or IP addresses is a string containing one or more statements of the form `allow <ip address>;`. Each IP address may either be a single address (e.g. `allow 192.168.1.130;`) or an address range (e.g. `allow 192.168.2.0/24;`). If it is changed, run `docker compose down` followed by `docker compose up -d` to reload the addresses into the container.
 
 ### Install SSL key and certificate
 
@@ -54,14 +54,6 @@ Store the SSL private key as `ssl/<host>.key` and its certificate as `ssl/<host>
 ```bash
 docker compose up -d --build
 ```
-
-Building the python and zope environment might take several minutes. To check the progress you might check the log file of the container. To find the beginning of the ID of the container run:
-
-```bash
-docker ps
-```
-
-Use the first column to identify the python/zope container and check its logs. On debian systems they are located at /var/lib/docker/containers/<container_id>/<container_id>.json
 
 ## Operation
 
@@ -191,7 +183,6 @@ docker exec ihs-web-1 cat /etc/hosts
 
 - `./.env`: Global parameters
 - `./docker-compose.yml`: Build configuration of all containers
-- `./nginx_templates/default.conf.template`: NGINX configuration
 - `/var/lib/docker/containers/xxxxx/xxxxx-json.log`: Container log
 - `/var/lib/docker/volumes`: Shared volumes for persistent data
 
@@ -208,12 +199,11 @@ Links to zope releases (to look up the most recent version):
 
 - https://pypi.org/project/Zope/#history
 
-The IHS system is configured for specific version numbers of these images to keep it stable. IHS developers need to keep an eye on the web pages of the images to determine if a more recent version should be used. Before updating the MariaDB, python or zope version make sure you have a backup! The version numbers must be updated in the `.env`:
+The IHS system is configured for specific version numbers of these images to keep it stable. IHS developers make sure that compatible version of the underlying images are used. The most recent, tested version can be found in the `docker-compose.yaml`.  Before updating the MariaDB, python or zope version make sure you have a backup!:
 
-Rebuild and restart all docker containers:
+To update, replace the `docker-compose.yaml` with the most recent version in this repository and restart the containers:
 
 ```bash
-docker compose up -d --build
+docker compose down
+docker compose up -d
 ```
-
-Updating python or zope requires to rebuild the zope environment. This might take several minutes.

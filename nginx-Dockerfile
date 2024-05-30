@@ -1,6 +1,0 @@
-ARG NGINX_VERSION
-FROM nginx:${NGINX_VERSION}
-
-COPY ./nginx_files/nginx_setup.sh /
-CMD ["bash", "nginx_setup.sh"]
-ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:${MARIADB_VERSION}
+    image: mariadb:11.2
     restart: always
     ports:
       - 127.0.0.1:3306:3306
@@ -8,7 +8,6 @@ services:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     volumes:
       - mariadb-data:/var/lib/mysql
-      - backup:/backup
     healthcheck:
       test: ["CMD", "/usr/local/bin/healthcheck.sh", "--connect"]
     command: [
@@ -21,22 +20,15 @@ services:
           - db
 
   zope:
-    image: python:${PYTHON_VERSION}
+    image: svenkleinert/pxd-ihs-zope:13.0.0
     restart: always
     ports:
       - 127.0.0.1:8080:8080
-    build:
-      dockerfile: zope-Dockerfile
-      args:
-        PYTHON_VERSION: ${PYTHON_VERSION}
     environment:
-        ZOPE_VERSION: ${ZOPE_VERSION}
         ZOPE_ROOT_PASSWORD: ${ZOPE_ROOT_PASSWORD}
-        PYTHON_VERSION: ${PYTHON_VERSION}
     volumes:
-      - zope-data:/usr/local/share/ihs
-      - zope-filestorage:/usr/local/share/ihs/var/filestorage
-      - backup:/backup
+      - zope-data:/usr/local/share/ihs/ihs-instances
+      - zope-import:/usr/local/share/ihs/var/zopeinstance/import
     depends_on:
       - db
     healthcheck:
@@ -47,7 +39,7 @@ services:
           - zope
   
   phpmyadmin:
-    image: phpmyadmin:${PHPMYADMIN_VERSION}
+    image: phpmyadmin:5.2
     restart: always
     ports:
       - 127.0.0.1:8088:8088
@@ -66,13 +58,8 @@ services:
           - phpmyadmin
 
   web:
-    image: nginx:${NGINX_VERSION}
+    image: svenkleinert/pxd-ihs-nginx:1.25
     restart: always
-    build:
-      dockerfile: nginx-Dockerfile
-      args:
-        NGINX_VERSION: ${NGINX_VERSION}
-        NGINX_HOST: ${NGINX_HOST}
     ports:
       - 80:80
       - 443:443
@@ -80,7 +67,6 @@ services:
       - NGINX_HOST=${NGINX_HOST}
       - NGINX_ALLOW=${NGINX_ALLOW}
     volumes:
-      - ./nginx_templates:/etc/nginx/templates
       - ./ssl:/etc/ssl/nginx
     depends_on:
       - zope
@@ -95,8 +81,7 @@ services:
 volumes:
   mariadb-data:
   zope-data:
-  zope-filestorage:
-  backup:
+  zope-import:
 
 networks:
   main:
