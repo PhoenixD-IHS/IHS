@@ -8,7 +8,6 @@ services:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     volumes:
       - mariadb-data:/var/lib/mysql
-      - backup:/backup
     healthcheck:
       test: ["CMD", "/usr/local/bin/healthcheck.sh", "--connect"]
     command: [
@@ -21,16 +20,15 @@ services:
           - db
 
   zope:
-    image: svenkleinert/pxd-ihs-zope:13.0.0-beta
+    image: svenkleinert/pxd-ihs-zope:13.0.0
     restart: always
     ports:
       - 127.0.0.1:8080:8080
     environment:
         ZOPE_ROOT_PASSWORD: ${ZOPE_ROOT_PASSWORD}
     volumes:
-      - zope-data:/usr/local/share/ihs
-      - zope-filestorage:/usr/local/share/ihs/var/filestorage
-      - backup:/backup
+      - zope-data:/usr/local/share/ihs/ihs-instances
+      - zope-import:/usr/local/share/ihs/var/zopeinstance/import
     depends_on:
       - db
     healthcheck:
@@ -60,7 +58,7 @@ services:
           - phpmyadmin
 
   web:
-    image: svenkleinert/pxd-ihs-nginx:1.25-beta
+    image: svenkleinert/pxd-ihs-nginx:1.25
     restart: always
     ports:
       - 80:80
@@ -83,8 +81,7 @@ services:
 volumes:
   mariadb-data:
   zope-data:
-  zope-filestorage:
-  backup:
+  zope-import:
 
 networks:
   main:
