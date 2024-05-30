@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:${MARIADB_VERSION}
+    image: mariadb:11.2
     restart: always
     ports:
       - 127.0.0.1:3306:3306
@@ -21,18 +21,12 @@ services:
           - db
 
   zope:
-    image: python:${PYTHON_VERSION}
+    image: svenkleinert/pxd-ihs-zope:13.0.0-beta
     restart: always
     ports:
       - 127.0.0.1:8080:8080
-    build:
-      dockerfile: zope-Dockerfile
-      args:
-        PYTHON_VERSION: ${PYTHON_VERSION}
     environment:
-        ZOPE_VERSION: ${ZOPE_VERSION}
         ZOPE_ROOT_PASSWORD: ${ZOPE_ROOT_PASSWORD}
-        PYTHON_VERSION: ${PYTHON_VERSION}
     volumes:
       - zope-data:/usr/local/share/ihs
       - zope-filestorage:/usr/local/share/ihs/var/filestorage
@@ -47,7 +41,7 @@ services:
           - zope
   
   phpmyadmin:
-    image: phpmyadmin:${PHPMYADMIN_VERSION}
+    image: phpmyadmin:5.2
     restart: always
     ports:
       - 127.0.0.1:8088:8088
@@ -66,13 +60,8 @@ services:
           - phpmyadmin
 
   web:
-    image: nginx:${NGINX_VERSION}
+    image: svenkleinert/pxd-ihs-nginx:1.25-beta
     restart: always
-    build:
-      dockerfile: nginx-Dockerfile
-      args:
-        NGINX_VERSION: ${NGINX_VERSION}
-        NGINX_HOST: ${NGINX_HOST}
     ports:
       - 80:80
       - 443:443
@@ -80,7 +69,6 @@ services:
       - NGINX_HOST=${NGINX_HOST}
       - NGINX_ALLOW=${NGINX_ALLOW}
     volumes:
-      - ./nginx_templates:/etc/nginx/templates
       - ./ssl:/etc/ssl/nginx
     depends_on:
       - zope
