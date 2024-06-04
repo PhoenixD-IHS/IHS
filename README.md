@@ -29,6 +29,19 @@ apt update
 apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ```
 
+### Download the installation files
+
+It's higly recommended to clone the git repository to obtain the files:
+```bash
+git clone https://github.com/PhoenixD-IHS/IHS.git
+```
+To update the content of the repository run
+```bash
+git pull
+```
+from within the cloned folder.
+The following parts of these instructions assume that the current working directory is the cloned/downloaded IHS folder.
+
 ### Install the file `.env`
 
 ```bash
