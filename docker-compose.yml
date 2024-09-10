@@ -20,7 +20,7 @@ services:
           - db
 
   zope:
-    image: svenkleinert/pxd-ihs-zope:13.0.0
+    image: svenkleinert/pxd-ihs-zope:13.0.2
     restart: always
     ports:
       - 127.0.0.1:8080:8080
