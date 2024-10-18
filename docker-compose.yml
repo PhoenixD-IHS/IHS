@@ -29,6 +29,9 @@ services:
     volumes:
       - zope-data:/usr/local/share/ihs/ihs-instances
       - zope-import:/usr/local/share/ihs/var/zopeinstance/import
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
     depends_on:
       - db
     healthcheck:
