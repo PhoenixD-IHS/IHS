@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:11.2
+    image: mariadb:11.7
     restart: always
     ports:
       - 127.0.0.1:3306:3306
@@ -60,7 +60,7 @@ services:
           - phpmyadmin
 
   web:
-    image: svenkleinert/pxd-ihs-nginx:1.25
+    image: svenkleinert/pxd-ihs-nginx:1.27
     restart: always
     ports:
       - 80:80
