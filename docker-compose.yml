@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:11.7
+    image: mariadb:11.8.2
     restart: always
     ports:
       - 127.0.0.1:3306:3306
@@ -20,7 +20,7 @@ services:
           - db
 
   zope:
-    image: svenkleinert/pxd-ihs-zope:13.0.2
+    image: svenkleinert/pxd-ihs-zope:14.0.2
     restart: always
     ports:
       - 127.0.0.1:8080:8080
@@ -41,7 +41,7 @@ services:
           - zope
   
   phpmyadmin:
-    image: phpmyadmin:5.2
+    image: phpmyadmin:5.2.2
     restart: always
     ports:
       - 127.0.0.1:8088:8088
@@ -60,7 +60,7 @@ services:
           - phpmyadmin
 
   web:
-    image: svenkleinert/pxd-ihs-nginx:1.27
+    image: svenkleinert/pxd-ihs-nginx:1.28.0
     restart: always
     ports:
       - 80:80
