@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:11.8.2
+    image: mariadb:11.8.5
     restart: always
     ports:
       - 127.0.0.1:3306:3306
@@ -10,22 +10,18 @@ services:
       - mariadb-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "/usr/local/bin/healthcheck.sh", "--connect"]
-    command: [
-      "--wait_timeout=31536000",
-      "--interactive_timeout=31536000"
-    ]
+    command: ["--wait_timeout=31536000", "--interactive_timeout=31536000"]
     networks:
       main:
         aliases:
           - db
-
   zope:
-    image: svenkleinert/pxd-ihs-zope:14.0.2
+    image: svenkleinert/pxd-ihs-zope:14.0.3
     restart: always
     ports:
       - 127.0.0.1:8080:8080
     environment:
-        ZOPE_ROOT_PASSWORD: ${ZOPE_ROOT_PASSWORD}
+      ZOPE_ROOT_PASSWORD: ${ZOPE_ROOT_PASSWORD}
     volumes:
       - zope-data:/usr/local/share/ihs/ihs-instances
       - zope-import:/usr/local/share/ihs/var/zopeinstance/import
@@ -39,9 +35,8 @@ services:
       main:
         aliases:
           - zope
-  
   phpmyadmin:
-    image: phpmyadmin:5.2.2
+    image: phpmyadmin:5.2.3
     restart: always
     ports:
       - 127.0.0.1:8088:8088
@@ -58,9 +53,8 @@ services:
       main:
         aliases:
           - phpmyadmin
-
   web:
-    image: svenkleinert/pxd-ihs-nginx:1.28.0
+    image: svenkleinert/pxd-ihs-nginx:1.29.3
     restart: always
     ports:
       - 80:80
@@ -79,11 +73,9 @@ services:
       main:
         aliases:
           - web
-
 volumes:
   mariadb-data:
   zope-data:
   zope-import:
-
 networks:
   main:
