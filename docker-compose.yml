@@ -16,7 +16,7 @@ services:
         aliases:
           - db
   zope:
-    image: svenkleinert/pxd-ihs-zope:14.0.3
+    image: svenkleinert/pxd-ihs-zope:14.0.4
     restart: always
     ports:
       - 127.0.0.1:8080:8080
@@ -30,7 +30,7 @@ services:
     depends_on:
       - db
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.01:8080"]
+      test: ["CMD", "python", "/healthcheck.py"]
     networks:
       main:
         aliases:
@@ -54,7 +54,7 @@ services:
         aliases:
           - phpmyadmin
   web:
-    image: svenkleinert/pxd-ihs-nginx:1.29.3
+    image: svenkleinert/pxd-ihs-nginx:1.29.4
     restart: always
     ports:
       - 80:80
@@ -68,7 +68,7 @@ services:
       - zope
       - phpmyadmin
     healthcheck:
-      test: ["CMD", "service", "nginx", "status"]
+      test: ["CMD-SHELL", "wget -q --spider -Y off --no-check-certificate  https://127.0.0.1/health || exit 1"]
     networks:
       main:
         aliases:
