@@ -1,6 +1,6 @@
 services:
   db:
-    image: mariadb:11.8.5
+    image: mariadb:11.8.8
     restart: always
     ports:
       - 127.0.0.1:3306:3306
@@ -16,7 +16,7 @@ services:
         aliases:
           - db
   zope:
-    image: svenkleinert/pxd-ihs-zope:14.0.4
+    image: svenkleinert/pxd-ihs-zope:14.0.5
     restart: always
     ports:
       - 127.0.0.1:8080:8080
