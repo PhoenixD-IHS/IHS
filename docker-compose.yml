@@ -55,6 +55,7 @@ services:
           - phpmyadmin
   web:
     image: svenkleinert/pxd-ihs-nginx:1.31.2
+    container_name: ihs-web
     restart: always
     ports:
       - 80:80
