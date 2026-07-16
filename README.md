@@ -32,13 +32,17 @@ apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin
 ### Download the installation files
 
 It's higly recommended to clone the git repository to obtain the files:
+
 ```bash
 git clone https://github.com/PhoenixD-IHS/IHS.git
 ```
+
 To update the content of the repository run
+
 ```bash
 git pull
 ```
+
 from within the cloned folder.
 The following parts of these instructions assume that the current working directory is the cloned/downloaded IHS folder.
 
@@ -58,9 +62,35 @@ Set configuration variables
 
 The list or IP addresses is a string containing one or more statements of the form `allow <ip address>;`. Each IP address may either be a single address (e.g. `allow 192.168.1.130;`) or an address range (e.g. `allow 192.168.2.0/24;`). If it is changed, run `docker compose down` followed by `docker compose up -d` to reload the addresses into the container.
 
-### Install SSL key and certificate
+### Install SSL key and certificate (without ACME)
 
-Store the SSL private key as `ssl/<host>.key` and its certificate as `ssl/<host>.crt`. The key must be accessible without a pass phrase. If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation.
+Store the SSL private key as `ssl/privkey.pem` and its certificate as `ssl/fullchain.pem`. The key must be accessible without a pass phrase. If there is no certificate private key in the folder `ssl`, a self signed certificate will be generated during installation. Modify the `docker-compose.yaml` file so that the volume section looks like this:
+
+```yaml
+volumes:
+  - ./ssl:/etc/ssl/nginx # no acme configuration
+  #- /etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem:/etc/ssl/nginx/fullchain.pem
+  #- /etc/letsencrypt/live/${NGINX_HOST}/privkey.pem:/etc/ssl/nginx/privkey.pem
+```
+
+### Install SSL key and certificate with ACME
+
+Certbot is the recommended acme client. If you use another client, you need to adjust the settings in the docker-compose.yaml and write your own hook that restarts the webserver once the certificate is renewed.\\
+
+First get a certificate using the manual provided by your institution. Then start the containers. Afterwards, copy the certbot renew-hook to the correct directory and mark it as an executable:
+
+```bash
+cp letsencrypt/ihs-nginx /etc/letsencrypt/renewal-hooks/deploy/
+chmod +x /etc/letsencrypt/renewal-hooks/deploy/ihs-nginx
+```
+
+To test the certificate renewal run the following command:
+
+```bash
+certbot renew --force-renewal
+```
+
+You should find an entry in the log file `/var/log/certbot-renew.log` and the validity details on the homepage should be updated.
 
 ### Build all docker containers
 
@@ -212,7 +242,7 @@ Links to zope releases (to look up the most recent version):
 
 - https://pypi.org/project/Zope/#history
 
-The IHS system is configured for specific version numbers of these images to keep it stable. IHS developers make sure that compatible version of the underlying images are used. The most recent, tested version can be found in the `docker-compose.yaml`.  Before updating the MariaDB, python or zope version make sure you have a backup!:
+The IHS system is configured for specific version numbers of these images to keep it stable. IHS developers make sure that compatible version of the underlying images are used. The most recent, tested version can be found in the `docker-compose.yaml`. Before updating the MariaDB, python or zope version make sure you have a backup!:
 
 To update, replace the `docker-compose.yaml` with the most recent version in this repository and restart the containers:
 

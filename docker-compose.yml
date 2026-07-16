@@ -54,7 +54,7 @@ services:
         aliases:
           - phpmyadmin
   web:
-    image: svenkleinert/pxd-ihs-nginx:1.29.4
+    image: svenkleinert/pxd-ihs-nginx:1.31.2
     restart: always
     ports:
       - 80:80
@@ -63,7 +63,10 @@ services:
       - NGINX_HOST=${NGINX_HOST}
       - NGINX_ALLOW=${NGINX_ALLOW}
     volumes:
-      - ./ssl:/etc/ssl/nginx
+      #- ./ssl:/etc/ssl/nginx # no acme configuration
+      - /etc/letsencrypt/live/${NGINX_HOST}/fullchain.pem:/etc/ssl/nginx/fullchain.pem:ro
+      - /etc/letsencrypt/live/${NGINX_HOST}/privkey.pem:/etc/ssl/nginx/privkey.pem:ro
+    user: root
     depends_on:
       - zope
       - phpmyadmin
