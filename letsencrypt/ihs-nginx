@@ -1,0 +1,7 @@
+#!/bin/bash
+
+NGINX_CONTAINER="ihs-web"
+
+docker restart ihs-web > /dev/null
+
+echo "Nginx running in container ${NGINX_CONTAINER} reloaded by certbot at: $(date)" >> /var/log/certbot-renew.log
